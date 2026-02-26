@@ -99,6 +99,8 @@ az account show --output table
 # Set subscription
 az account set --subscription ""
 
+az upgrade
+
 # Initialize & Apply
 terraform init
 terraform plan
@@ -125,13 +127,30 @@ az storage account create \
   --min-tls-version TLS1_2 \
   --allow-blob-public-access false
 
+# RBAC permissions
+# OBJECT_ID
+az ad signed-in-user show --query id -o tsv
+# SUB_ID
+az account show --query id -o tsv
+# Assign role
+az role assignment create \
+  --assignee <OBJECT_ID> \
+  --role "Storage Blob Data Owner" \
+  --scope /subscriptions/<SUB_ID>/resourceGroups/rg-tfstate-westus3-prod/providers/Microsoft.Storage/storageAccounts/sttfstatewestus3prod01
+
 # Enable soft delete + versioning
-# Left off here
-az storage blob service-properties update \
+az storage account blob-service-properties update \
   --account-name sttfstatewestus3prod01 \
+  --resource-group rg-tfstate-westus3-prod \
   --enable-delete-retention true \
   --delete-retention-days 7 \
   --enable-versioning true
+
+# Verify
+az storage account blob-service-properties show \
+  --account-name sttfstatewestus3prod01 \
+  --resource-group rg-tfstate-westus3-prod \
+  --output table
 
 # Create container
 az storage container create \
