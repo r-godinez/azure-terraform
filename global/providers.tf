@@ -1,3 +1,4 @@
-provider "azurerm" {
-  features {}
-}
+# CURRENTLY NOT BEING USED
+# provider "azurerm" {
+#   features {}
+# }
