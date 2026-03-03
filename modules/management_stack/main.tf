@@ -45,3 +45,4 @@ resource "azurerm_management_lock" "rg_lock" {
         azurerm_key_vault.kv
     ]
 }
+# Comment out section to destroy the resource group and all resources within it
